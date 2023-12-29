@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Walmart Valve</title>
+    <style>
+        /* Add your styles here */
+    </style>
+</head>
+<body>
+    <div id="tab1">
+        <h2>Add Task</h2>
+        <label for="startDateTime">Start Date and Time:</label>
+        <input type="datetime-local" id="startDateTime" value="" required>
+        <br>
+
+        <label for="endDateTime">End Date and Time:</label>
+        <input type="datetime-local" id="endDateTime" value="" required>
+        <br>
+
+        <label for="taskName">Task Name:</label>
+        <input type="text" id="taskName" value="" required>
+        <br>
+
+        <label for="category">Category:</label>
+        <input type="text" id="category" value="" required>
+        <br>
+
+        <label for="recurrence">Recurrence:</label>
+        <select id="recurrence">
+            <option value="none">None</option>
+            <option value="daily">Daily</option>
+            <option value="weekly">Weekly</option>
+            <option value="monthly">Monthly</option>
+            <option value="yearly">Yearly</option>
+        </select>
+
+        <button onclick="addTask()">Add Task</button>
+    </div>
+
+    <div id="tab2">
+        <h2>All Tasks</h2>
+        <ul id="taskList"></ul>
+    </div>
+
+<script>
+    // Function to set default start date and end date to today
+    function setDefaultDates() {
+        var today = new Date().toISOString().slice(0, 16);  // Format: "YYYY-MM-DDTHH:mm"
+        document.getElementById('startDateTime').value = today;
+        document.getElementById('endDateTime').value = today;
+    }
+
+    // Call the function when the page loads
+    window.onload = setDefaultDates;
+
+    var taskIdCounter = 0;  // Counter for unique task IDs
+
+    // Function to add a task
+    function addTask() {
+        // Get input values
+        var startDateTime = document.getElementById('startDateTime').value;
+        var endDateTime = document.getElementById('endDateTime').value;
+        var taskName = document.getElementById('taskName').value;
+        var category = document.getElementById('category').value;
+        var recurrence = document.getElementById('recurrence').value;
+
+        // Validate input values
+        if (!startDateTime || !endDateTime || !taskName || !category) {
+            alert('Please fill in all fields.');
+            return;
+        }
+
+        // Create task object
+        var task = {
+            taskId: taskIdCounter++,
+            startDateTime: startDateTime,
+            endDateTime: endDateTime,
+            taskName: taskName,
+            category: category,
+            recurrence: recurrence
+        };
+
+        // Add task to the list
+        var taskList = document.getElementById('taskList');
+
+        // Check if category heading already exists
+        var categoryHeading = taskList.querySelector(`h3[data-category="${category}"]`);
+        if (!categoryHeading) {
+            categoryHeading = document.createElement('h3');
+            categoryHeading.setAttribute('data-category', category);
+            categoryHeading.textContent = category;
+            taskList.appendChild(categoryHeading);
+        }
+
+        var taskItem = document.createElement('li');
+        taskItem.id = `task_${task.taskId}`;
+        taskItem.innerHTML = `
+            ${task.taskName} - 
+            <span class="countdown" data-endtime="${task.endDateTime}"></span>
+            <button class="complete-button">Complete</button>
+        `;
+        var ul = categoryHeading.nextElementSibling;
+        if (!ul) {
+            ul = document.createElement('ul');
+            categoryHeading.insertAdjacentElement('afterend', ul);
+        }
+        ul.insertAdjacentHTML('beforeend', `<li>${taskItem.innerHTML}</li>`);
+
+        // Reset input fields and set default dates
+        setDefaultDates();
+        document.getElementById('taskName').value = '';
+        document.getElementById('category').value = '';
+        document.getElementById('recurrence').value = 'none';
+
+        // Update countdown timers
+        updateCountdowns();
+    }
+
+    // Event listener for task completion
+    document.getElementById('taskList').addEventListener('click', function(event) {
+        if (event.target.classList.contains('complete-button')) {
+            var taskItem = event.target.closest('li');
+            var categoryId = taskItem.closest('ul').previousElementSibling.getAttribute('data-category');
+            taskItem.parentNode.removeChild(taskItem);
+            
+            // Check if the category is now empty and remove the heading
+            var categoryList = taskList.querySelector(`h3[data-category="${categoryId}"]`).nextElementSibling;
+            if (!categoryList || categoryList.children.length === 0) {
+                taskList.querySelector(`h3[data-category="${categoryId}"]`).remove();
+            }
+        }
+    });
+
+    // Function to update countdown timers
+    // Function to update countdown timers and color tasks
+    function updateCountdowns() {
+      var now = new Date().getTime();
+      var taskItems = document.querySelectorAll('.countdown');
+
+      taskItems.forEach(taskItem => {
+        var endTime = new Date(taskItem.dataset.endtime).getTime();
+        var distance = endTime - now;
+
+        var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+        var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+        taskItem.innerHTML = `${days}d ${hours}h ${minutes}m ${seconds}s`;
+
+        // Change color if past the end date
+        if (distance < 0) {
+          taskItem.innerHTML = 'DEADLINE PASSED';
+          taskItem.parentNode.style.color = 'red';
+        } else {
+          taskItem.parentNode.style.color = ''; // Reset color
+        }
+      });
+    }
+
+
+    // Update countdowns every second
+    setInterval(updateCountdowns, 1000);
+</script>
+
+</body>
+</html>
