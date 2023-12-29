@@ -6,10 +6,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Walmart Valve</title>
     <style>
-        /* Add your styles here */
+        body {
+            background-color: #ffe6e6; /* Light red background color */
+            color: #ff0000; /* Red text color */
+            font-family: 'Arial', sans-serif; /* Choose a suitable font */
+        }
+
+        h1 {
+            color: #ff0000; /* Red color for the title */
+            text-align: center; /* Center the text */
+            margin-top: 50px; /* Add some top margin for spacing */
+        }
     </style>
 </head>
 <body>
+	<h1>Valve 2.0</h1>
     <div id="tab1">
         <h2>Add Task</h2>
         <label for="startDateTime">Start Date and Time:</label>
