@@ -1,28 +1,47 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Walmart Valve</title>
+    <title>Task Manager</title>
     <style>
+        /* Add your styles here */
         body {
-            background-color: #ffe6e6; /* Light red background color */
+            font-family: 'Arial', sans-serif;
+			background-color: #ffe6e6; /* Light red background color */
             color: #ff0000; /* Red text color */
-            font-family: 'Arial', sans-serif; /* Choose a suitable font */
+            margin: 0;
+            padding: 0;
         }
 
+        .sectionHeader {
+            background-color: #333; /* Dark background color for section header */
+            color: white;
+            text-align: center;
+            padding: 14px;
+            cursor: pointer;
+        }
+
+        .sectionContent {
+            display: block; /* Show the content by default */
+            padding: 20px;
+        }
+        
         h1 {
             color: #ff0000; /* Red color for the title */
             text-align: center; /* Center the text */
             margin-top: 50px; /* Add some top margin for spacing */
         }
+        
     </style>
 </head>
 <body>
 	<h1>Valve 2.0</h1>
-    <div id="tab1">
+
+    <div class="sectionHeader" onclick="toggleSection('addTaskSection')">Add Task</div>
+    <div id="addTaskSection" class="sectionContent">
         <h2>Add Task</h2>
+        <!-- Your "Add Task" content goes here -->
         <label for="startDateTime">Start Date and Time:</label>
         <input type="datetime-local" id="startDateTime" value="" required>
         <br>
@@ -51,12 +70,19 @@
         <button onclick="addTask()">Add Task</button>
     </div>
 
-    <div id="tab2">
+    <div class="sectionHeader" onclick="toggleSection('allTasksSection')">All Tasks</div>
+    <div id="allTasksSection" class="sectionContent">
         <h2>All Tasks</h2>
+        <!-- Your "All Tasks" content goes here -->
         <ul id="taskList"></ul>
     </div>
 
-<script>
+    <script>
+        function toggleSection(sectionId) {
+            var sectionContent = document.getElementById(sectionId);
+            sectionContent.style.display = (sectionContent.style.display === 'none' || sectionContent.style.display === '') ? 'block' : 'none';
+        }
+        
     // Function to set default start date and end date to today
     function setDefaultDates() {
         var today = new Date().toISOString().slice(0, 16);  // Format: "YYYY-MM-DDTHH:mm"
