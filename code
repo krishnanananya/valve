@@ -65,10 +65,10 @@
         <label for="recurrence">Recurrence:</label>
         <select id="recurrence">
             <option value="none">None</option>
-            <option value="daily">Daily</option>
-            <option value="weekly">Weekly</option>
-            <option value="monthly">Monthly</option>
-            <option value="yearly">Yearly</option>
+            <option value="daily">Every Day</option>
+            <option value="weekly">Every 7 Days</option>
+            <option value="monthly">Every 30 Days</option>
+            <option value="yearly">Every 365 Days</option>
         </select>
 
         <button onclick="addTask()">Add Task</button>
