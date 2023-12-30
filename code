@@ -116,6 +116,12 @@
                 return;
             }
 
+            // Check if the task is recurring
+            if (recurrence !== 'none') {
+                addRecurringTasks(startDateTime, endDateTime, taskName, category, recurrence);
+                return;
+            }
+
             // Create task object
             var task = {
                 taskId: taskIdCounter++,
@@ -126,7 +132,7 @@
                 recurrence: recurrence
             };
 
-            // Check if end date heading already exists
+            // Check if end date heading already exists or create a new one
             endDateHeading = taskList.querySelector(`h3[data-enddate="${endDateTime.split('T')[0]}"]`);
             if (!endDateHeading) {
                 endDateHeading = document.createElement('h3');
@@ -139,12 +145,12 @@
                 endDateHeading.appendChild(categoryList);
             }
 
-            // Check if category heading already exists
+            // Check if category heading already exists or create a new one
             var categoryHeading = getCategoryHeading(endDateHeading, category);
             if (!categoryHeading) {
                 categoryHeading = document.createElement('li');
                 categoryHeading.setAttribute('data-category', category);
-                categoryHeading.textContent = `${category}`;
+                categoryHeading.textContent = category;
                 endDateHeading.lastChild.appendChild(categoryHeading);
 
                 // Create an unordered list for tasks under the category heading
@@ -206,6 +212,92 @@
                 updateCountdowns();
             }
         });
+
+        // Function to add recurring tasks
+        function addRecurringTasks(startDateTime, endDateTime, taskName, category, recurrence) {
+            var startDate = new Date(startDateTime);
+            var endDate = new Date(endDateTime);
+            var currentDate = new Date();
+
+            // Calculate the time difference in days
+            var dayDifference = Math.floor((endDate - startDate) / (24 * 60 * 60 * 1000));
+
+            // Define the recurrence multiplier based on the selected recurrence type
+            var recurrenceMultiplier;
+            switch (recurrence) {
+                case 'daily':
+                    recurrenceMultiplier = 1;
+                    break;
+                case 'weekly':
+                    recurrenceMultiplier = 7;
+                    break;
+                case 'monthly':
+                    recurrenceMultiplier = 30; // Approximate, not accounting for varying days in a month
+                    break;
+                case 'yearly':
+                    recurrenceMultiplier = 365; // Approximate, not accounting for leap years
+                    break;
+                default:
+                    recurrenceMultiplier = 1;
+            }
+
+            // Loop to add recurring tasks
+            for (var i = 0; i <= dayDifference; i += recurrenceMultiplier) {
+                var taskDate = new Date(startDate);
+                taskDate.setDate(taskDate.getDate() + i);
+
+                // Check if the task date is within the desired range
+                if (taskDate >= currentDate && taskDate <= endDate && i <= 7) {
+                    // Create task object
+                    var task = {
+                        taskId: taskIdCounter++,
+                        startDateTime: taskDate.toISOString().slice(0, 16),
+                        endDateTime: taskDate.toISOString().slice(0, 16),
+                        taskName: taskName,
+                        category: category,
+                        recurrence: recurrence
+                    };
+
+                    // Check if end date heading already exists or create a new one
+                    endDateHeading = taskList.querySelector(`h3[data-enddate="${taskDate.toISOString().slice(0, 10)}"]`);
+                    if (!endDateHeading) {
+                        endDateHeading = document.createElement('h3');
+                        endDateHeading.setAttribute('data-enddate', taskDate.toISOString().slice(0, 10));
+                        endDateHeading.textContent = taskDate.toISOString().slice(0, 10);
+                        taskList.appendChild(endDateHeading);
+
+                        // Create an unordered list for categories under the end date heading
+                        var categoryList = document.createElement('ul');
+                        endDateHeading.appendChild(categoryList);
+                    }
+
+                    // Check if category heading already exists or create a new one
+                    var categoryHeading = getCategoryHeading(endDateHeading, category);
+                    if (!categoryHeading) {
+                        categoryHeading = document.createElement('li');
+                        categoryHeading.setAttribute('data-category', category);
+                        categoryHeading.textContent = category;
+                        endDateHeading.lastChild.appendChild(categoryHeading);
+
+                        // Create an unordered list for tasks under the category heading
+                        var taskItemList = document.createElement('ul');
+                        categoryHeading.appendChild(taskItemList);
+                    }
+
+                    var taskItem = document.createElement('li');
+                    taskItem.id = `task_${task.taskId}`;
+                    taskItem.innerHTML = `
+                        ${task.taskName} - 
+                        <span class="countdown" data-endtime="${task.endDateTime}"></span>
+                        <button class="complete-button">Complete</button>
+                    `;
+                    categoryHeading.lastChild.appendChild(taskItem);
+                }
+            }
+
+            // Update countdown timers
+            updateCountdowns();
+        }
 
         // Function to update countdown timers and color tasks
         function updateCountdowns() {
