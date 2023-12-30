@@ -131,7 +131,7 @@
             if (!endDateHeading) {
                 endDateHeading = document.createElement('h3');
                 endDateHeading.setAttribute('data-enddate', endDateTime.split('T')[0]);
-                endDateHeading.textContent = `End Date: ${endDateTime.split('T')[0]}`;
+                endDateHeading.textContent = `${endDateTime.split('T')[0]}`;
                 taskList.appendChild(endDateHeading);
 
                 // Create an unordered list for categories under the end date heading
@@ -144,7 +144,7 @@
             if (!categoryHeading) {
                 categoryHeading = document.createElement('li');
                 categoryHeading.setAttribute('data-category', category);
-                categoryHeading.textContent = `Category: ${category}`;
+                categoryHeading.textContent = `${category}`;
                 endDateHeading.lastChild.appendChild(categoryHeading);
 
                 // Create an unordered list for tasks under the category heading
