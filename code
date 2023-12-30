@@ -81,155 +81,160 @@
     </div>
 
     <script>
-    function toggleSection(sectionId) {
-        var sectionContent = document.getElementById(sectionId);
-        sectionContent.style.display = (sectionContent.style.display === 'none' || sectionContent.style.display === '') ? 'block' : 'none';
-    }
+        var endDateHeading;  // Declare endDateHeading as a global variable
 
-    // Function to set default start date and end date to today
-    function setDefaultDates() {
-        var today = new Date().toISOString().slice(0, 16);  // Format: "YYYY-MM-DDTHH:mm"
-        document.getElementById('startDateTime').value = today;
-        document.getElementById('endDateTime').value = today;
-    }
-
-    // Call the function when the page loads
-    window.onload = setDefaultDates;
-
-    var taskIdCounter = 0;  // Counter for unique task IDs
-    var taskList = document.getElementById('taskList'); // Moved the taskList variable outside the addTask function
-
-    // Function to add a task
-    function addTask() {
-        // Get input values
-        var startDateTime = document.getElementById('startDateTime').value;
-        var endDateTime = document.getElementById('endDateTime').value;
-        var taskName = document.getElementById('taskName').value;
-        var category = document.getElementById('category').value;
-        var recurrence = document.getElementById('recurrence').value;
-
-        // Validate input values
-        if (!startDateTime || !endDateTime || !taskName || !category) {
-            alert('Please fill in all fields.');
-            return;
+        function toggleSection(sectionId) {
+            var sectionContent = document.getElementById(sectionId);
+            sectionContent.style.display = (sectionContent.style.display === 'none' || sectionContent.style.display === '') ? 'block' : 'none';
         }
 
-        // Create task object
-        var task = {
-            taskId: taskIdCounter++,
-            startDateTime: startDateTime,
-            endDateTime: endDateTime,
-            taskName: taskName,
-            category: category,
-            recurrence: recurrence
-        };
-
-        // Check if end date heading already exists
-        var endDateHeading = taskList.querySelector(`h3[data-enddate="${endDateTime.split('T')[0]}"]`);
-        if (!endDateHeading) {
-            endDateHeading = document.createElement('h3');
-            endDateHeading.setAttribute('data-enddate', endDateTime.split('T')[0]);
-            endDateHeading.textContent = `${endDateTime.split('T')[0]}`;
-            taskList.appendChild(endDateHeading);
-
-            // Create an unordered list for categories under the end date heading
-            var categoryList = document.createElement('ul');
-            endDateHeading.appendChild(categoryList);
+        // Function to set default start date and end date to today
+        function setDefaultDates() {
+            var today = new Date().toISOString().slice(0, 16);  // Format: "YYYY-MM-DDTHH:mm"
+            document.getElementById('startDateTime').value = today;
+            document.getElementById('endDateTime').value = today;
         }
 
-        // Check if category heading already exists
-        var categoryHeading = endDateHeading.querySelector(`li[data-category="${category}"]`);
-        if (!categoryHeading) {
-            categoryHeading = document.createElement('li');
-            categoryHeading.setAttribute('data-category', category);
-            categoryHeading.textContent = `${category}`;
-            endDateHeading.lastChild.appendChild(categoryHeading);
+        // Call the function when the page loads
+        window.onload = setDefaultDates;
 
-            // Create an unordered list for tasks under the category heading
-            var taskItemList = document.createElement('ul');
-            categoryHeading.appendChild(taskItemList);
-        }
+        var taskIdCounter = 0;  // Counter for unique task IDs
+        var taskList = document.getElementById('taskList'); // Moved the taskList variable outside the addTask function
 
-        var taskItem = document.createElement('li');
-        taskItem.id = `task_${task.taskId}`;
-        taskItem.innerHTML = `
-            ${task.taskName} - 
-            <span class="countdown" data-endtime="${task.endDateTime}"></span>
-            <button class="complete-button">Complete</button>
-        `;
-        categoryHeading.lastChild.appendChild(taskItem);
+        // Function to add a task
+        function addTask() {
+            // Get input values
+            var startDateTime = document.getElementById('startDateTime').value;
+            var endDateTime = document.getElementById('endDateTime').value;
+            var taskName = document.getElementById('taskName').value;
+            var category = document.getElementById('category').value;
+            var recurrence = document.getElementById('recurrence').value;
 
-        // Reset input fields and set default dates
-        setDefaultDates();
-        document.getElementById('taskName').value = '';
-        document.getElementById('category').value = '';
-        document.getElementById('recurrence').value = 'none';
-
-        // Update countdown timers
-        updateCountdowns();
-    }
-
-//Event listener
-document.getElementById('taskList').addEventListener('click', function (event) {
-    if (event.target.classList.contains('complete-button')) {
-        var taskItem = event.target.closest('li');
-        var categoryId = taskItem.closest('li[data-category]').getAttribute('data-category');
-        taskItem.parentNode.removeChild(taskItem);
-
-        // Check if the category is now empty and remove the heading
-        var categoryList = endDateHeading.querySelector(`li[data-category="${categoryId}"] ul`);
-        if (!categoryList || categoryList.children.length === 0) {
-            var categoryHeading = endDateHeading.querySelector(`li[data-category="${categoryId}"]`);
-            if (categoryHeading) {
-                categoryHeading.remove();
+            // Validate input values
+            if (!startDateTime || !endDateTime || !taskName || !category) {
+                alert('Please fill in all fields.');
+                return;
             }
+
+            // Create task object
+            var task = {
+                taskId: taskIdCounter++,
+                startDateTime: startDateTime,
+                endDateTime: endDateTime,
+                taskName: taskName,
+                category: category,
+                recurrence: recurrence
+            };
+
+            // Check if end date heading already exists
+            endDateHeading = taskList.querySelector(`h3[data-enddate="${endDateTime.split('T')[0]}"]`);
+            if (!endDateHeading) {
+                endDateHeading = document.createElement('h3');
+                endDateHeading.setAttribute('data-enddate', endDateTime.split('T')[0]);
+                endDateHeading.textContent = `End Date: ${endDateTime.split('T')[0]}`;
+                taskList.appendChild(endDateHeading);
+
+                // Create an unordered list for categories under the end date heading
+                var categoryList = document.createElement('ul');
+                endDateHeading.appendChild(categoryList);
+            }
+
+            // Check if category heading already exists
+            var categoryHeading = getCategoryHeading(endDateHeading, category);
+            if (!categoryHeading) {
+                categoryHeading = document.createElement('li');
+                categoryHeading.setAttribute('data-category', category);
+                categoryHeading.textContent = `Category: ${category}`;
+                endDateHeading.lastChild.appendChild(categoryHeading);
+
+                // Create an unordered list for tasks under the category heading
+                var taskItemList = document.createElement('ul');
+                categoryHeading.appendChild(taskItemList);
+            }
+
+            var taskItem = document.createElement('li');
+            taskItem.id = `task_${task.taskId}`;
+            taskItem.innerHTML = `
+                ${task.taskName} - 
+                <span class="countdown" data-endtime="${task.endDateTime}"></span>
+                <button class="complete-button">Complete</button>
+            `;
+            categoryHeading.lastChild.appendChild(taskItem);
+
+            // Reset input fields and set default dates
+            setDefaultDates();
+            document.getElementById('taskName').value = '';
+            document.getElementById('category').value = '';
+            document.getElementById('recurrence').value = 'none';
+
+            // Update countdown timers
+            updateCountdowns();
         }
 
-        // Check if all categories are empty and remove the end date heading
-        var allCategoryLists = endDateHeading.querySelectorAll('ul');
-        var isEmpty = Array.from(allCategoryLists).every(list => list.children.length === 0);
-
-        if (isEmpty) {
-            endDateHeading.remove();
+        // Function to get or create a category heading
+        function getCategoryHeading(endDateHeading, category) {
+            return Array.from(endDateHeading.lastChild.children).find(item => item.getAttribute('data-category') === category);
         }
 
-        // Update countdown timers
-        updateCountdowns();
-    }
-});
+        // Event listener for task completion
+        taskList.addEventListener('click', function (event) {
+            if (event.target.classList.contains('complete-button')) {
+                var taskItem = event.target.closest('li');
+                var categoryId = taskItem.closest('li[data-category]').getAttribute('data-category');
+                var endDate = taskItem.closest('h3[data-enddate]').getAttribute('data-enddate');
+                taskItem.parentNode.removeChild(taskItem);
 
+                // Check if the category is now empty and remove the heading
+                var endDateHeading = taskList.querySelector(`h3[data-enddate="${endDate}"]`);
+                var categoryList = endDateHeading.querySelector(`li[data-category="${categoryId}"] ul`);
+                if (!categoryList || categoryList.children.length === 0) {
+                    var categoryHeading = endDateHeading.querySelector(`li[data-category="${categoryId}"]`);
+                    if (categoryHeading) {
+                        categoryHeading.remove();
+                    }
+                }
 
+                // Check if all categories are empty and remove the end date heading
+                var allCategoryLists = endDateHeading.querySelectorAll('ul');
+                var isEmpty = Array.from(allCategoryLists).every(list => list.children.length === 0);
 
+                if (isEmpty) {
+                    endDateHeading.remove();
+                }
 
-    // Function to update countdown timers and color tasks
-    function updateCountdowns() {
-        var now = new Date().getTime();
-        var taskItems = document.querySelectorAll('.countdown');
-
-        taskItems.forEach(taskItem => {
-            var endTime = new Date(taskItem.dataset.endtime).getTime();
-            var distance = endTime - now;
-
-            var days = Math.floor(distance / (1000 * 60 * 60 * 24));
-            var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-            var seconds = Math.floor((distance % (1000 * 60)) / 1000);
-
-            taskItem.innerHTML = `${days}d ${hours}h ${minutes}m ${seconds}s`;
-
-            // Change color if past the end date
-            if (distance < 0) {
-                taskItem.innerHTML = 'DEADLINE PASSED';
-                taskItem.parentNode.style.color = 'blue';
-            } else {
-                taskItem.parentNode.style.color = ''; // Reset color
+                // Update countdown timers
+                updateCountdowns();
             }
         });
-    }
 
-    // Update countdowns every second
-    setInterval(updateCountdowns, 1000);
-</script>
+        // Function to update countdown timers and color tasks
+        function updateCountdowns() {
+            var now = new Date().getTime();
+            var taskItems = document.querySelectorAll('.countdown');
 
+            taskItems.forEach(taskItem => {
+                var endTime = new Date(taskItem.dataset.endtime).getTime();
+                var distance = endTime - now;
+
+                var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+                taskItem.innerHTML = `${days}d ${hours}h ${minutes}m ${seconds}s`;
+
+                // Change color if past the end date
+                if (distance < 0) {
+                    taskItem.innerHTML = 'DEADLINE PASSED';
+                    taskItem.parentNode.style.color = 'red';
+                } else {
+                    taskItem.parentNode.style.color = ''; // Reset color
+                }
+            });
+        }
+
+        // Update countdowns every second
+        setInterval(updateCountdowns, 1000);
+    </script>
 </body>
 </html>
