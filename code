@@ -244,7 +244,7 @@
             // Loop to add recurring tasks
             for (var i = 0; i <= dayDifference; i += recurrenceMultiplier) {
                 var taskDate = new Date(startDate);
-                taskDate.setDate(taskDate.getDate() + i);
+                taskDate.setDate(taskDate.getDate() + i - 1);
 
                 // Check if the task date is within the desired range
                 if (taskDate >= currentDate && taskDate <= endDate && i <= 7) {
@@ -318,7 +318,7 @@
                 // Change color if past the end date
                 if (distance < 0) {
                     taskItem.innerHTML = 'DEADLINE PASSED';
-                    taskItem.parentNode.style.color = 'red';
+                    taskItem.parentNode.style.color = 'blue';
                 } else {
                     taskItem.parentNode.style.color = ''; // Reset color
                 }
