@@ -5,11 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Task Manager</title>
     <style>
-        /* Updated pastel color theme styles */
         body {
             font-family: 'Roboto', sans-serif;
-            background-color: #f9f9f9; /* Light grayish background color */
-            color: #555; /* Dark grayish text color */
+            background-color: #f9f9f9;
+            color: #555;
             margin: 0;
             padding: 0;
             display: flex;
@@ -18,13 +17,23 @@
         }
 
         h1 {
-            color: #6a7c94; /* Pastel blue color for the title */
+            color: #6a7c94;
             text-align: center;
             margin-top: 30px;
         }
+        
+        h1 img {
+            margin-right: 10px;
+            margin-bottom: -5px;
+            transition: transform 0.5s ease;
+		}
+
+		h1 img:hover {
+    		transform: rotate(360deg);
+		}
 
         .sectionHeader {
-            background-color: #6a7c94; /* Pastel blue color for section header */
+            background-color: #6a7c94;
             color: white;
             text-align: center;
             padding: 14px;
@@ -37,22 +46,22 @@
         .sectionContent {
             display: none;
             padding: 20px;
-            background-color: #fff; /* White background for section content */
-            border: 1px solid #ddd; /* Light gray border */
+            background-color: #fff;
+            border: 1px solid #ddd;
             border-top: none;
             box-sizing: border-box;
             width: 100%;
         }
 
         .sectionContent h2 {
-            color: #6a7c94; /* Pastel blue color for section content heading */
+            color: #6a7c94;
             margin-bottom: 10px;
         }
 
         label {
             display: block;
             margin-bottom: 8px;
-            color: #777; /* Dark grayish color for labels */
+            color: #777;
         }
 
         input,
@@ -65,21 +74,21 @@
         }
 
         button {
-            background-color: #6a7c94; /* Pastel blue color for buttons */
+            background-color: #6a7c94;
             color: white;
             border: none;
             cursor: pointer;
         }
 
         button:hover {
-            background-color: #4e6281; /* Darker shade on hover */
+            background-color: #4e6281;
         }
 
         .categoryHeading {
             margin-top: 15px;
             margin-bottom: 5px;
             padding-left: 15px;
-            border-left: 2px solid #6a7c94; /* Pastel blue color for left border */
+            border-left: 2px solid #6a7c94;
         }
 
         .categoryHeading:hover {
@@ -97,7 +106,7 @@
         }
 
         .complete-button {
-            background-color: #581845; /* Material green color for complete button */
+            background-color: #581845;
             color: white;
             border: none;
             padding: 5px 10px;
@@ -105,7 +114,7 @@
         }
 
         .complete-button:hover {
-            background-color: #C70039; /* Darker shade on hover */
+            background-color: #C70039;
         }
 
         .countdown {
@@ -121,18 +130,19 @@
         @media (min-width: 600px) {
             .sectionHeader,
             .sectionContent {
-                width: 50%;
+                width: 60%;
             }
         }
     </style>
 </head>
 <body>
-    <h1>Valve 2.0</h1>
+    <h1>Valve 2.0 <img src="https://pngbuy.com/wp-content/uploads/2023/04/Clipart-Orange-png.png" alt="Orange Clipart" height="40"></h1>
+
 
     <div class="sectionHeader" onclick="toggleSection('addTaskSection')">Add Task</div>
     <div id="addTaskSection" class="sectionContent">
         <h2>Add Task</h2>
-        <!-- Your "Add Task" content goes here -->
+        <!-- "Add Task" content goes here -->
         <label for="startDateTime">Start Date and Time:</label>
         <input type="datetime-local" id="startDateTime" value="" required>
         <br>
@@ -163,7 +173,7 @@
 
     <div class="sectionHeader" onclick="toggleSection('allTasksSection')">All Tasks</div>
     <div id="allTasksSection" class="sectionContent">
-        <!-- Your "All Tasks" content goes here -->
+        <!-- "All Tasks" content goes here -->
         <ul id="taskList"></ul>
     </div>
 
