@@ -97,7 +97,7 @@
         }
 
         .complete-button {
-            background-color: #4CAF50; /* Material green color for complete button */
+            background-color: #581845; /* Material green color for complete button */
             color: white;
             border: none;
             padding: 5px 10px;
@@ -105,12 +105,17 @@
         }
 
         .complete-button:hover {
-            background-color: #45a049; /* Darker shade on hover */
+            background-color: #C70039; /* Darker shade on hover */
         }
 
         .countdown {
-            font-weight: bold;
+            font-weight: normal;
+            color: #4F515E;
         }
+        
+        .task-name {
+    		font-weight: normal;
+		}
 
         /* Responsive styles */
         @media (min-width: 600px) {
@@ -241,12 +246,13 @@
             }
 
             var taskItem = document.createElement('li');
-            taskItem.id = `task_${task.taskId}`;
-            taskItem.innerHTML = `
-                ${task.taskName} - 
-                <span class="countdown" data-endtime="${task.endDateTime}"></span>
-                <button class="complete-button">Complete</button>
-            `;
+taskItem.id = `task_${task.taskId}`;
+taskItem.innerHTML = `
+    <span class="task-name">${task.taskName}</span> - 
+    <span class="countdown" data-endtime="${task.endDateTime}"></span>
+    <button class="complete-button">Complete</button>
+`;
+
             categoryHeading.lastChild.appendChild(taskItem);
 
             // Reset input fields and set default dates
