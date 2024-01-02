@@ -180,7 +180,7 @@
         <button onclick="addTask()">Add Task</button>
     </div>
 
-    <div class="sectionHeader" onclick="toggleSection('allTasksSection')">All Tasks</div>
+    <div class="sectionHeader" onclick="toggleSection('allTasksSection')">Today's Tasks</div>
     <div id="allTasksSection" class="sectionContent">
         <!-- "All Tasks" content goes here -->
         <ul id="taskList"></ul>
@@ -196,11 +196,22 @@
 
         // Function to set default start date and end date to today
         function setDefaultDates() {
-            var today = new Date().toISOString().slice(0, 16);  // Format: "YYYY-MM-DDTHH:mm"
-            document.getElementById('startDateTime').value = today;
-            document.getElementById('endDateTime').value = today;
-        }
+    // Get the current date
+    var today = new Date();
 
+    // Get the timezone offset in minutes
+    var timezoneOffset = today.getTimezoneOffset();
+
+    // Adjust the date based on the offset
+    today.setMinutes(today.getMinutes() - timezoneOffset);
+
+    // Format the date to "YYYY-MM-DDTHH:mm"
+    var formattedDate = today.toISOString().slice(0, 16);
+
+    // Set the values for startDateTime and endDateTime
+    document.getElementById('startDateTime').value = formattedDate;
+    document.getElementById('endDateTime').value = formattedDate;
+}
         // Call the function when the page loads
         window.onload = setDefaultDates;
 
@@ -425,7 +436,7 @@ taskItem.innerHTML = `
                 // Change color if past the end date
                 if (distance < 0) {
                     taskItem.innerHTML = 'DEADLINE PASSED';
-                    taskItem.parentNode.style.color = 'blue';
+                    taskItem.parentNode.style.color = 'red';
                 } else {
                     taskItem.parentNode.style.color = ''; // Reset color
                 }
