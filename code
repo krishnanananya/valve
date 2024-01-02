@@ -417,6 +417,12 @@ taskItem.innerHTML = `
                     categoryHeading.lastChild.appendChild(taskItem);
                 }
             }
+            
+            // Reset input fields and set default dates
+            setDefaultDates();
+            document.getElementById('taskName').value = '';
+            document.getElementById('category').value = '';
+            document.getElementById('recurrence').value = 'none';
 
             // Update countdown timers
             updateCountdowns();
