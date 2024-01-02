@@ -367,7 +367,7 @@ taskItem.innerHTML = `
                 taskDate.setDate(taskDate.getDate() + i);
 
                 // Check if the task date is within the desired range
-                if (taskDate >= currentDate && taskDate <= endDate && i <= 7) {
+                if (taskDate >= currentDate && taskDate <= endDate) {
                     // Adjust taskDate to local timezone
                     var timezoneOffset = taskDate.getTimezoneOffset();
                     taskDate.setMinutes(taskDate.getMinutes() - timezoneOffset);
