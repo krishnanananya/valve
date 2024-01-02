@@ -42,6 +42,10 @@
             width: 100%;
             box-sizing: border-box;
         }
+        
+        .sectionHeader:hover {
+            background-color: #4e6281;
+        }
 
         .sectionContent {
             display: none;
@@ -136,7 +140,12 @@
     </style>
 </head>
 <body>
-    <h1>Valve 2.0 <img src="https://pngbuy.com/wp-content/uploads/2023/04/Clipart-Orange-png.png" alt="Orange Clipart" height="40"></h1>
+    <h1>
+        Valve 2.0
+        <a href="https://finviz.com/futures_charts.ashx?t=JO&p=d" target="_blank">
+            <img src="https://pngbuy.com/wp-content/uploads/2023/04/Clipart-Orange-png.png" alt="Orange Clipart" height="40">
+        </a>
+    </h1>
 
 
     <div class="sectionHeader" onclick="toggleSection('addTaskSection')">Add Task</div>
