@@ -110,7 +110,7 @@
         }
 
         .complete-button {
-            background-color: #581845;
+            background-color: #272E5D;
             color: white;
             border: none;
             padding: 5px 10px;
@@ -118,7 +118,7 @@
         }
 
         .complete-button:hover {
-            background-color: #C70039;
+            background-color: #4B295C;
         }
 
         .countdown {
@@ -196,22 +196,20 @@
 
         // Function to set default start date and end date to today
         function setDefaultDates() {
-    // Get the current date
-    var today = new Date();
+            var today = new Date();
 
-    // Get the timezone offset in minutes
-    var timezoneOffset = today.getTimezoneOffset();
+            // Get the timezone offset in minutes
+            var timezoneOffset = today.getTimezoneOffset();
 
-    // Adjust the date based on the offset
-    today.setMinutes(today.getMinutes() - timezoneOffset);
+            // Adjust the date based on the offset
+            today.setMinutes(today.getMinutes() - timezoneOffset);
 
-    // Format the date to "YYYY-MM-DDTHH:mm"
-    var formattedDate = today.toISOString().slice(0, 16);
+            var formattedDate = today.toISOString().slice(0, 16);
 
-    // Set the values for startDateTime and endDateTime
-    document.getElementById('startDateTime').value = formattedDate;
-    document.getElementById('endDateTime').value = formattedDate;
-}
+            document.getElementById('startDateTime').value = formattedDate;
+            document.getElementById('endDateTime').value = formattedDate;
+        }
+        
         // Call the function when the page loads
         window.onload = setDefaultDates;
 
@@ -335,7 +333,11 @@ taskItem.innerHTML = `
         function addRecurringTasks(startDateTime, endDateTime, taskName, category, recurrence) {
             var startDate = new Date(startDateTime);
             var endDate = new Date(endDateTime);
+
             var currentDate = new Date();
+            var timezoneOffsetCurr = currentDate.getTimezoneOffset();
+            currentDate.setMinutes(currentDate.getMinutes() - timezoneOffsetCurr);
+            
 
             // Calculate the time difference in days
             var dayDifference = Math.floor((endDate - startDate) / (24 * 60 * 60 * 1000));
@@ -360,12 +362,16 @@ taskItem.innerHTML = `
             }
 
             // Loop to add recurring tasks
-            for (var i = 0; i <= dayDifference; i += recurrenceMultiplier) {
+            for (var i = 0; i <= dayDifference; i += recurrenceMultiplier){
                 var taskDate = new Date(startDate);
-                taskDate.setDate(taskDate.getDate() + i - 1);
+                taskDate.setDate(taskDate.getDate() + i);
 
                 // Check if the task date is within the desired range
                 if (taskDate >= currentDate && taskDate <= endDate && i <= 7) {
+                    // Adjust taskDate to local timezone
+                    var timezoneOffset = taskDate.getTimezoneOffset();
+                    taskDate.setMinutes(taskDate.getMinutes() - timezoneOffset);
+
                     // Create task object
                     var task = {
                         taskId: taskIdCounter++,
@@ -375,7 +381,6 @@ taskItem.innerHTML = `
                         category: category,
                         recurrence: recurrence
                     };
-
                     // Check if end date heading already exists or create a new one
                     endDateHeading = taskList.querySelector(`h3[data-enddate="${taskDate.toISOString().slice(0, 10)}"]`);
                     if (!endDateHeading) {
