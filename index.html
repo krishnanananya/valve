@@ -315,11 +315,17 @@
     }
 
     // Event listener for task completion
-    taskList.addEventListener('click', function (event) {
-        if (event.target.classList.contains('complete-button')) {
-            var taskItem = event.target.closest('li');
-            var categoryId = taskItem.closest('li[data-category]').getAttribute('data-category');
-            var endDate = taskItem.closest('h3[data-enddate]').getAttribute('data-enddate');
+taskList.addEventListener('click', function (event) {
+    if (event.target.classList.contains('complete-button')) {
+        var taskItem = event.target.closest('li');
+        var categoryId = taskItem.closest('li[data-category]').getAttribute('data-category');
+        var endDate = taskItem.closest('h3[data-enddate]').getAttribute('data-enddate');
+
+        // Display a confirmation popup
+        var confirmCompletion = window.confirm('Do you really want to complete the task?');
+
+        if (confirmCompletion) {
+            // If the user clicks "OK" in the confirmation popup
             taskItem.parentNode.removeChild(taskItem);
 
             // Check if the category is now empty and remove the heading
@@ -346,7 +352,10 @@
             // Order tasks by end date
             orderTasksByEndDate();
         }
-    });
+        // If the user clicks "Cancel" in the confirmation popup, do nothing
+    }
+});
+
     
     
         // Function to add recurring tasks
